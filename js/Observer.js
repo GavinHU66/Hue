@@ -1,31 +1,47 @@
 class Observer {
   constructor(data) {
-    this.observer(data);
+    this.observe(data)
   }
-  observer(data) {
+
+  /**
+   * 
+   * @param {Object} data 
+   */
+  observe(data) {
     if (!data || typeof data !== 'object') {
-      return false;
+      return
     } 
     Object.keys(data).forEach(key => this.defineReactive(data, key, data[key]))
   }
 
+  /**
+   * 为data的每个属性都执行一遍defineReactive方法，如果当前属性为对象，则通过递归进行深度遍历
+   * @param {Object} obj 操作的对象
+   * @param {String} key 键
+   * @param {*} value 值
+   */
   defineReactive(obj, key, value) {
-    let manager = new Manager();
+    //利用闭包存储每个属性关联的watcher队列，当setter触发时依然能访问到
+    let manager = new Manager()
+    // let childObj = this.observe(value)
     Object.defineProperty(obj, key, {
       enumerable: true,
       configurable: false,
       get () {
         if (Manager.target) {
-          manager.addSub(Manager.target);    // 添加订阅者watcher,应该是整个实例Watcher
+          manager.addSub(Manager.target)  // 添加订阅者watcher, 应该是整个实例Watcher
+          // if (childObj) {
+          //   childObj.manager.addSub
+          // }
         }
         return value;
       },
       set (newValue) {
         if (newValue === value) { return false; }
-        value = newValue;
-        manager.notify(); // 数据变化，通知dep里所有的watcher
+        value = newValue
+        manager.notify() // 数据变化，通知dep里所有的watcher
       }
     })
   }
 }
-Manager.target = null;
+Manager.target = null

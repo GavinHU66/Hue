@@ -25,12 +25,13 @@
 
   {{message}}<br>
 
-  <input type="text" v-model="version">
-
-  {{version}}
-
-
   <button v-on:click="myClick">点击</button>
+
+  
+  <div v-model="persons">{{persons.toString()}}</div><br>
+
+
+
 </div>
 
 <script>
@@ -38,8 +39,17 @@
     el: '#app',
     data: {
       message: 'hello Vue!',
-      version: '1.0.0',
       location: "Beijing",
+      persons: {
+        person1: {
+          name: 'gavin',
+          age: 21
+        },
+        person2: {
+          name: 'bob',
+          age: 20
+        }
+      }
     },
 
 
@@ -51,8 +61,6 @@
         this.message = "new message"
       }
     }
-
-
   })
 </script>
 </body>
