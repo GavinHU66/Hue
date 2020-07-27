@@ -1,3 +1,6 @@
+/**
+ * @description 观察者
+ */
 class Observer {
   constructor(data) {
     this.observe(data)
@@ -18,12 +21,12 @@ class Observer {
    * 为data的每个属性都执行一遍defineReactive方法，如果当前属性为对象，则通过递归进行深度遍历
    * @param {Object} obj 操作的对象
    * @param {String} key 键
-   * @param {*} value 值
+   * @param {*} val 值
    */
-  defineReactive(obj, key, value) {
+  defineReactive(obj, key, val) {
     //利用闭包存储每个属性关联的watcher队列，当setter触发时依然能访问到
     let manager = new Manager()
-    // let childObj = this.observe(value)
+    // let childObj = this.observe(val)
     Object.defineProperty(obj, key, {
       enumerable: true,
       configurable: false,
@@ -34,11 +37,11 @@ class Observer {
           //   childObj.manager.addSub
           // }
         }
-        return value;
+        return val;
       },
-      set (newValue) {
-        if (newValue === value) { return false; }
-        value = newValue
+      set (newVal) {
+        if (newVal === val) { return false }
+        val = newVal
         manager.notify() // 数据变化，通知dep里所有的watcher
       }
     })

@@ -1,3 +1,6 @@
+/**
+ * @description 解析器, 对于每个元素上的指令进行解析, 根据指令替换数据, 更新视图
+ */
 class Compiler {
 
   /**
@@ -95,24 +98,66 @@ class Compiler {
    * @description 编译方法，为所编译的节点添加 Watcher
    */
   handlers = {
+
+    /**
+     * @description 
+     * 将DOM节点通过new Watcher来变成一个订阅者，
+     * 每次数据key变化时此DOM节点通过cb回电函数进行更新，
+     * 即 data -> view
+     * 
+     * @param {Object} node DOM节点
+     * @param {Object} vm 当前MyMVVM实例
+     * @param {String} key 属性键值
+     */
     model (node, vm, key) {
       // 初始化的时候取一次值填充，渲染页面数据
       node.value = vm[key]
 
-      // 实例化watcher(调用watcher),将watcher添加到Manager中，同时定义好回调函数, 即数据变化后要干什么
+      // 实例化watcher(调用watcher)，将watcher添加到Manager中，同时定义好回调函数, 即数据变化后要干什么
+      // 实例化一个Watcher类
+      // constructor 中 this.value = this.vm[this.key] 触发 MyMVVM 的 getter
+      // MyMVVM 的 getter
       new Watcher(vm, key, newVal => node.textContent = newVal)
 
       // 监听input值的变化，从view到data
       node.addEventListener('input', event => vm[key] = event.target.value)
     },
 
+    /**
+     * @description 
+     * 将DOM节点通过new Watcher来变成一个订阅者，
+     * 每次数据key变化时此DOM节点通过cb回电函数进行更新，
+     * 即 data -> view
+     * 
+     * @param {Object} node DOM节点
+     * @param {Object} vm 当前MyMVVM实例
+     * @param {String} key 属性键值
+     */
     text (node, vm, key) {
       // 初始化的时候取一次值填充，渲染页面数据
+      // vm.data[key] 触发 MyMVVM getter
+      // MyMVVM getter 触发 Observer getter
       node.textContent = vm.data[key]
-      // 实例化watcher(调用watcher),将watcher添加到Manager中，同时定义好回调函数, 即数据变化后要干什么
+
+      // 实例化watcher，将watcher添加到Manager中（Manager.target）
+      // this.val = this.vm[this.key] 触发 MyMVVM getter
+      // MyMVVM getter vm.data[key] 触发 MyMVVM getter
+      // 此时Manager.target为此Watcher实例，添加自己 manager.addSub(Manager.target) 
+      // 定义回调函数, 即数据变化后要干什么
       new Watcher(vm, key, newVal => node.textContent = newVal)
     },
 
+    /**
+     * @description 
+     * 为DOM节点添加事件，例如input、click事件等
+     * 每次触发事件，调用methods内相应的方法，
+     * 即可在此实现 view -> data
+     * 
+     * @param {Object} node DOM节点
+     * @param {Object} vm 当前MyMVVM实例
+     * @param {String} eventType 事件类型
+     * @param {String} methodName 事件所触发方法的方法名
+     */
     on (node, vm, eventType, methodName) {
       if (vm.methods && vm.methods[methodName]) {
         node.addEventListener(eventType, vm.methods[methodName].bind(vm), false)

@@ -3,14 +3,14 @@ class Manager {
    * @description constructor
    */
   constructor () {
-    this.subs = [];
+    this.subs = [] // 是保存watcher的数组
   }
   /**
-   * @description 添加一个订阅者
-   * @param {*} sub 订阅者
+   * @description 添加一个订阅者watcher
+   * @param {*} sub 订阅者watcher
    */
   addSub (sub) {
-    this.subs.push(sub);
+    this.subs.push(sub)
   }
 
   /**
