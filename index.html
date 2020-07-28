@@ -28,38 +28,35 @@
   <button v-on:click="myClick">点击</button>
 
   
-  <div v-model="persons">{{persons.toString()}}</div><br>
+  <div v-model="persons">{{persons.person1.name}}</div><br>
 
 
 
 </div>
 
 <script>
-  debugger
   new MyMVVM({
     el: '#app',
     data: {
       message: 'hello Vue!',
       location: "Beijing",
-      persons: {
-        person1: {
-          name: 'gavin',
-          age: 21
-        },
-        person2: {
-          name: 'bob',
-          age: 20
-        }
-      }
+      // persons: {
+      //   person1: {
+      //     name: 'gavin',
+      //     age: 21
+      //   },
+      //   person2: {
+      //     name: 'bob',
+      //     age: 20
+      //   }
+      // }
     },
 
 
     methods: {
       myClick: function () {
-        alert('点击事件')
-        console.log(this);
-        alert(this.message)
         this.message = "new message"
+        // this.persons.person1.name = "new name"
       }
     }
   })

@@ -4,7 +4,7 @@
 class Watcher {
   constructor(vm, key, cb) {
     this.vm = vm;
-    this.key = key;           // data中的key值
+    this.key = key;          // data中的key值
     this.cb = cb;
     Manager.target = this;   // 缓存自己,就是这个Watcher实例
     this.val = this.vm[this.key];  // 触发执行Observer中的get函数

@@ -65,32 +65,35 @@ class Compiler {
 
       if (attrName.indexOf('v-') === 0) {
 
-        // 取到'model/text/on:click', 即指令的类型
-        var type = attrName.split('-')[1]    
+        // 取到'model/text/on:click'，即指令的类型，或者undefined如果没有指令
+        var type = attrName.split('-')[1]
+        
+        // 指令model/text/on:click等
+        if (type) {
+          // v-[on:click] 等
+          if (type.indexOf('on:') === 0) {
+            var eventName = type.split(':')[1]
+            this.handlers.on(node, this.vm, eventName, attrVal)
+          }
 
-        // v-[on:click] 等
-        if (type.indexOf('on:') === 0) {
-          var eventName = type.split(':')[1]
-          this.handlers.on(node, this.vm, eventName, attrVal)
-        }
-
-        // v-[model], v-[text] 等
-        if (this.handlers[type]) {
-          this.handlers[type](node, this.vm, attrVal)
+          // v-[model], v-[text] 等
+          if (this.handlers[type]) {
+            this.handlers[type](node, this.vm, attrVal)
+          }
         }
       }
     })
   }
 
   /**
-   * @description 文本节点编译器{{message}}, 跟v-text共用一个编译方法
+   * @description 文本节点编译器{{message}}，跟v-text共用一个编译方法
    * @param {Object} node 进行编译的DOM节点
    */
   textNodeCompiler(node) {
     var reg = /\{\{(.+)\}\}/
     var text = node.textContent
     if (reg.test(text)) {
-      this.handlers.text(node, this.vm, RegExp.$1);
+      this.handlers.text(node, this.vm, RegExp.$1.replace(/ /g, ""));
     }
   }
 
@@ -111,6 +114,7 @@ class Compiler {
      */
     model (node, vm, key) {
       // 初始化的时候取一次值填充，渲染页面数据
+
       node.value = vm[key]
 
       // 实例化watcher(调用watcher)，将watcher添加到Manager中，同时定义好回调函数, 即数据变化后要干什么
