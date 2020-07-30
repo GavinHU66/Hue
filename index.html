@@ -27,11 +27,6 @@
 
   <button v-on:click="myClick">点击</button>
 
-  
-  <div v-model="persons">{{persons.person1.name}}</div><br>
-
-
-
 </div>
 
 <script>
@@ -40,23 +35,10 @@
     data: {
       message: 'hello Vue!',
       location: "Beijing",
-      // persons: {
-      //   person1: {
-      //     name: 'gavin',
-      //     age: 21
-      //   },
-      //   person2: {
-      //     name: 'bob',
-      //     age: 20
-      //   }
-      // }
     },
-
-
     methods: {
       myClick: function () {
         this.message = "new message"
-        // this.persons.person1.name = "new name"
       }
     }
   })
